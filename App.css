@@ -1,0 +1,156 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: url("./system background.jpg") no-repeat center center fixed;
+  background-size: 120%;
+  animation: panZoom 40s infinite alternate ease-in-out;
+}
+
+@keyframes panZoom {
+  0% {
+    background-position: left top;
+    background-size: 120%;
+  }
+  50% {
+    background-position: center center;
+    background-size: 100%;
+  }
+  100% {
+    background-position: right bottom;
+    background-size: 120%;
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  flex-direction: column;
+  min-height: calc(100vh - 100px); 
+  padding: 50px 20px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
+  width: 350px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.dashboard-card {
+  max-width: 500px;
+  width: 100%;
+  padding: 25px;
+  margin: 0 auto 30px auto;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.5s ease-in;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card h2, .dashboard-card h2 {
+  margin-bottom: 15px;
+  text-align: center;
+  color: #222;
+}
+
+.card input, .card select, .dashboard-card input, .dashboard-card select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.card button, .dashboard-card button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.card button:hover, .dashboard-card button:hover {
+  background: #005fa3;
+}
+
+.card p, .dashboard-card p {
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  color: #0077cc;
+}
+
+.dashboard-profile-pic {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.status-box {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 98%;
+  background: rgba(0, 60, 120, 0.9);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.nav-logo {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.nav-right button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  margin-left: 10px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-right button:hover {
+  background: white;
+  color: #003c78;
+}
