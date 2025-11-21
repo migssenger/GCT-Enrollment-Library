@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import Navbar from "./components/Navbar";
-
+// Components and Pages in alphabetical order
+import About from "./pages/About";
+import AdminDashboard from "./pages/AdminDashboard";
+import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import Enroll from "./pages/Enroll";
-import Library from "./pages/Library";
 import Login from "./pages/Login";
+import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 import Visit from "./pages/Visit";
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
   const [enrolled, setEnrolled] = useState(false); // enrollment status
   const [profilePic, setProfilePic] = useState(null); // profile picture URL
 
-  // Show Navbar only when not on login or signup
-  const showNavbar = mode !== "login" && mode !== "signup";
+  // Show Navbar only when not on login or signup AND not admin
+  const showNavbar = mode !== "login" && mode !== "signup" && user?.role !== 'admin';
 
   return (
     <>
@@ -27,7 +27,10 @@ function App() {
         <Navbar setMode={setMode} user={user} setUser={setUser} />
       )}
 
-      <div className="container">
+      <div className={`container ${mode === 'admin' ? 'admin-container' : ''}`}>
+        {mode === "about" && <About />}
+        {mode === "admin" && <AdminDashboard />}
+        {mode === "contact" && <Contact />}
         {mode === "dashboard" && (
           <Dashboard
             setMode={setMode}
@@ -43,7 +46,6 @@ function App() {
             setProfilePic={setProfilePic}
           />
         )}
-        {mode === "library" && <Library user={user} />}
         {mode === "login" && (
           <Login
             setMode={setMode}
@@ -53,8 +55,6 @@ function App() {
           />
         )}
         {mode === "signup" && <Signup setMode={setMode} />}
-        {mode === "about" && <About />}
-        {mode === "contact" && <Contact />}
         {mode === "visit" && <Visit />}
       </div>
     </>
