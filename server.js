@@ -1,4 +1,3 @@
-// ✅ server.js — Enrollment + Library + Admin System
 import express from "express";
 import cors from "cors";
 import sqlite3 from "sqlite3";
@@ -34,7 +33,8 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE,
       password TEXT,
-      enrolled INTEGER DEFAULT 0
+      enrolled INTEGER DEFAULT 0,
+      role TEXT DEFAULT 'user'
     )`,
     `CREATE TABLE IF NOT EXISTS enrollment (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,10 +43,6 @@ db.serialize(() => {
       course TEXT, semester TEXT, address TEXT, contact TEXT,
       father TEXT, mother TEXT, guardian TEXT, profilePic TEXT,
       status TEXT DEFAULT 'Pending', rejectionReason TEXT
-    )`,
-    `CREATE TABLE IF NOT EXISTS library (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT, bookTitle TEXT, dateBorrowed TEXT, dateReturned TEXT
     )`,
     `CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,39 +73,60 @@ const handleDBError = (res, err, successMsg = "Operation successful") => {
 const hashPassword = async (password) => await bcrypt.hash(password, 10);
 const comparePassword = async (plainPassword, hashedPassword) => await bcrypt.compare(plainPassword, hashedPassword);
 
-const authUser = (table, req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ success: false, error: "Missing fields" });
-
-  db.get(`SELECT * FROM ${table} WHERE email = ?`, [email], async (err, row) => {
-    if (err || !row) return res.status(401).json({ success: false, error: "Invalid credentials" });
-    
-    const isMatch = await comparePassword(password, row.password);
-    if (!isMatch) return res.status(401).json({ success: false, error: "Invalid credentials" });
-
-    res.json({ success: true, [table === "admins" ? "admin" : "user"]: row });
-  });
-};
-
 // Routes
+
+// Unified Signup - automatically detects admin vs user based on email format
 app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ success: false, error: "Missing fields" });
 
   try {
     const hashedPassword = await hashPassword(password);
-    db.run(`INSERT INTO users (email, password) VALUES (?, ?)`, [email, hashedPassword], (err) => {
+    
+    // Check if email is numeric-only (admin) or regular (user)
+    const isAdmin = /^\d+$/.test(email);
+    const table = isAdmin ? "admins" : "users";
+    
+    db.run(`INSERT INTO ${table} (email, password) VALUES (?, ?)`, [email, hashedPassword], (err) => {
       if (err) return res.status(400).json({ success: false, error: "User already exists" });
-      res.json({ success: true, message: "Signup successful" });
+      
+      const message = isAdmin ? "Admin signup successful" : "Signup successful";
+      res.json({ success: true, message, role: isAdmin ? 'admin' : 'user' });
     });
   } catch (err) {
     res.status(500).json({ success: false, error: "Server error during signup" });
   }
 });
 
-app.post("/login", (req, res) => authUser("users", req, res));
-app.post("/admin/login", (req, res) => authUser("admins", req, res));
+// Unified Login - checks both tables automatically
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ success: false, error: "Missing fields" });
 
+  // First check if it's an admin (numeric email)
+  const isAdmin = /^\d+$/.test(email);
+  const table = isAdmin ? "admins" : "users";
+
+  db.get(`SELECT * FROM ${table} WHERE email = ?`, [email], async (err, row) => {
+    if (err || !row) {
+      return res.status(401).json({ success: false, error: "Invalid credentials" });
+    }
+    
+    const isMatch = await comparePassword(password, row.password);
+    if (!isMatch) return res.status(401).json({ success: false, error: "Invalid credentials" });
+
+    // Return user data with role information
+    res.json({ 
+      success: true, 
+      user: {
+        ...row,
+        role: isAdmin ? 'admin' : 'user'
+      }
+    });
+  });
+});
+
+// Admin specific routes (for backward compatibility)
 app.post("/admin/signup", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ success: false, error: "Missing fields" });
@@ -125,6 +142,27 @@ app.post("/admin/signup", async (req, res) => {
   }
 });
 
+app.post("/admin/login", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ success: false, error: "Missing fields" });
+
+  db.get(`SELECT * FROM admins WHERE email = ?`, [email], async (err, row) => {
+    if (err || !row) return res.status(401).json({ success: false, error: "Invalid credentials" });
+    
+    const isMatch = await comparePassword(password, row.password);
+    if (!isMatch) return res.status(401).json({ success: false, error: "Invalid credentials" });
+
+    res.json({ 
+      success: true, 
+      user: {
+        ...row,
+        role: 'admin'
+      }
+    });
+  });
+});
+
+// Enrollment
 app.post("/enroll", upload.single("profilePic"), (req, res) => {
   const profilePicPath = req.file ? `/uploads/${req.file.filename}` : null;
   const fields = [
@@ -152,32 +190,6 @@ app.get("/enrollment/:email", (req, res) => {
   });
 });
 
-// Library routes
-app.post("/borrow", (req, res) => {
-  const { email, bookTitle } = req.body;
-  const today = new Date().toISOString().split("T")[0];
-  db.run(`INSERT INTO library (email, bookTitle, dateBorrowed) VALUES (?,?,?)`, 
-         [email, bookTitle, today], (err) => handleDBError(res, err, "Book borrowed"));
-});
-
-app.post("/return", (req, res) => {
-  const { email, bookTitle } = req.body;
-  const today = new Date().toISOString().split("T")[0];
-  db.run(`UPDATE library SET dateReturned = ? WHERE email = ? AND bookTitle = ? AND dateReturned IS NULL`,
-         [today, email, bookTitle], function(err) {
-    if (err) return handleDBError(res, err, "Return failed");
-    this.changes === 0 ? res.status(400).json({ success: false, error: "Book not found" }) 
-                       : res.json({ success: true });
-  });
-});
-
-app.get("/mybooks/:email", (req, res) => {
-  db.all(`SELECT * FROM library WHERE email = ?`, [req.params.email], (err, rows) => {
-    err ? res.status(500).json({ success: false, error: "Error fetching books" }) 
-        : res.json(rows || []);
-  });
-});
-
 // Admin routes
 app.get("/admin/enrollments", (req, res) => {
   db.all(`SELECT * FROM enrollment`, [], (err, rows) => {
@@ -196,5 +208,22 @@ app.post("/admin/reject", (req, res) => {
          [req.body.reason, req.body.email], (err) => handleDBError(res, err, "Enrollment rejected"));
 });
 
+// Temporary route to create admin account (remove in production)
+app.post("/setup-admin", async (req, res) => {
+  try {
+    const hashedPassword = await hashPassword("admin123");
+    db.run(`INSERT OR IGNORE INTO admins (email, password) VALUES (?, ?)`, 
+           ["12345", hashedPassword], function(err) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, message: "Admin account created: 12345 / admin123" });
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Setup failed" });
+  }
+});
+
+// Root route
 app.get("/", (req, res) => res.send("✅ Enrollment & Admin System Server is Running"));
+
+// Start server
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
