@@ -32,6 +32,12 @@ body {
   box-sizing: border-box;
 }
 
+/* Update container for admin dashboard */
+.container.admin-container {
+  padding-top: 80px;
+  align-items: flex-start;
+}
+
 .card {
   background: rgba(255, 255, 255, 0.9);
   padding: 20px;
@@ -153,4 +159,97 @@ body {
 .nav-right button:hover {
   background: white;
   color: #003c78;
+}
+
+/* Admin Dashboard Styles */
+.admin-dashboard {
+  max-width: 1200px;
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.admin-dashboard h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.admin-dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-dashboard th,
+.admin-dashboard td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-dashboard th {
+  background-color: #0077cc;
+  color: white;
+  font-weight: bold;
+}
+
+.admin-dashboard tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.admin-dashboard tr:hover {
+  background-color: #f5f5f5;
+}
+
+.admin-dashboard button {
+  padding: 6px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard button:first-of-type {
+  background-color: #28a745;
+  color: white;
+}
+
+.admin-dashboard button:first-of-type:hover {
+  background-color: #218838;
+}
+
+.admin-dashboard button:last-of-type {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-dashboard button:last-of-type:hover {
+  background-color: #c82333;
+}
+
+.error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Responsive design for admin table */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    overflow-x: auto;
+  }
+  
+  .admin-dashboard table {
+    min-width: 600px;
+  }
 }
