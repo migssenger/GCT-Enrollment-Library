@@ -5,13 +5,25 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
     surname: "", givenName: "", middleInitial: "",
     gender: "", dob: "", age: "",
     civilStatus: "", course: "", semester: "",
-    address: "", contact: "", father: "", mother: "", guardian: "",
+    yearLevel: "", nationality: "",
+    address: "", contact: "",
+    father: "", fatherOccupation: "",
+    mother: "", motherOccupation: "",
+    guardian: "",
   });
+
   const [profileFile, setProfileFile] = useState(null);
   const [message, setMessage] = useState("");
+  //new
+  const [birthCert, setBirthCert] = useState(null);
+  const [goodMoral, setGoodMoral] = useState(null);
+
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const handleFileChange = (e) => setProfileFile(e.target.files[0]);
+  //new
+  const handleBirthChange = (e) => setBirthCert(e.target.files[0]);
+  const handleGoodMoralChange = (e) => setGoodMoral(e.target.files[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +32,9 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     formData.append("email", user.email);
     if (profileFile) formData.append("profilePic", profileFile);
+    //new
+    if (birthCert) formData.append("birthCertificate", birthCert);
+    if (goodMoral) formData.append("goodMoral", goodMoral);
 
     try {
       const res = await fetch("http://localhost:4000/enroll", {
@@ -182,6 +197,32 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
           style={{ width: "100%", padding: "8px", marginBottom: "10px", borderRadius: "5px" }}
         />
 
+        {/*Year level and nationality */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+          <select
+            name="yearLevel"
+            value={form.yearLevel}
+            onChange={handleChange}
+            required
+            style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
+          >
+            <option value="">Year Level</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+
+          <input
+            name="nationality"
+            placeholder="Nationality"
+            value={form.nationality}
+            onChange={handleChange}
+            required
+            style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
+          />
+        </div>
+
         {/* Parents / Guardian */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input
@@ -191,6 +232,17 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
             onChange={handleChange}
             style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
           />
+
+          <input
+            name="fatherOccupation"
+            placeholder="Father’s Occupation"
+            value={form.fatherOccupation}
+            onChange={handleChange}
+            style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
+          />
+        </div>
+
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input
             name="mother"
             placeholder="Mother’s Name"
@@ -198,6 +250,17 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
             onChange={handleChange}
             style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
           />
+
+          <input
+            name="motherOccupation"
+            placeholder="Mother’s Occupation"
+            value={form.motherOccupation}
+            onChange={handleChange}
+            style={{ flex: 1, padding: "8px", borderRadius: "5px" }}
+          />
+        </div>
+
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input
             name="guardian"
             placeholder="Guardian’s Name"
@@ -207,12 +270,28 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
           />
         </div>
 
-        {/* Profile Picture */}
+        {/* Profile Picture / Birth Certificate / Good Moral Certificate */}
         <label style={{ marginBottom: "5px", display: "block" }}>Profile Picture:</label>
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
+          style={{ marginBottom: "15px" }}
+        />
+
+        <label style={{ marginBottom: "5px", display: "block" }}>Birth Certificate:</label>
+        <input
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleBirthChange}
+          style={{ marginBottom: "15px" }}
+        />
+
+        <label style={{ marginBottom: "5px", display: "block" }}>Good Moral Certificate:</label>
+        <input
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleGoodMoralChange}
           style={{ marginBottom: "15px" }}
         />
 
