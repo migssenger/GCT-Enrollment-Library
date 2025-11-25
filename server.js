@@ -40,9 +40,16 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT, surname TEXT, givenName TEXT, middleInitial TEXT,
       gender TEXT, dob TEXT, age INTEGER, civilStatus TEXT,
-      course TEXT, semester TEXT, address TEXT, contact TEXT,
-      father TEXT, mother TEXT, guardian TEXT, profilePic TEXT,
-      status TEXT DEFAULT 'Pending', rejectionReason TEXT
+      course TEXT, semester TEXT, yearLevel TEXT, nationality TEXT,
+      address TEXT, contact TEXT,
+      father TEXT, fatherOccupation TEXT,
+      mother TEXT, motherOccupation TEXT,
+      guardian TEXT,
+      profilePic TEXT,
+      birthCertificate TEXT,
+      goodMoral TEXT,
+      status TEXT DEFAULT 'Pending',
+      rejectionReason TEXT
     )`,
     `CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,12 +61,24 @@ db.serialize(() => {
 });
 
 // File upload
+//new (CJ)
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: "uploads/",
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + "-" + file.originalname);
+    }
+  })
+});
+//old
+/*
 const upload = multer({ 
   storage: multer.diskStorage({
     destination: "uploads/",
     filename: (req, file, cb) => cb(null, "profilePic-" + Date.now() + path.extname(file.originalname))
   })
 });
+*/
 
 // Helper functions
 const handleDBError = (res, err, successMsg = "Operation successful") => {
@@ -163,6 +182,52 @@ app.post("/admin/login", (req, res) => {
 });
 
 // Enrollment
+//new (CJ)
+app.post("/enroll", upload.fields([
+  { name: "profilePic", maxCount: 1 },
+  { name: "birthCertificate", maxCount: 1 },
+  { name: "goodMoral", maxCount: 1 }
+]), (req, res) => {
+
+  const file = req.files;
+  const profilePic = file.profilePic ? `/uploads/${file.profilePic[0].filename}` : null;
+  const birthCert = file.birthCertificate ? `/uploads/${file.birthCertificate[0].filename}` : null;
+  const goodMoral = file.goodMoral ? `/uploads/${file.goodMoral[0].filename}` : null;
+
+  const fields = [
+    req.body.email, req.body.surname, req.body.givenName, req.body.middleInitial,
+    req.body.gender, req.body.dob, req.body.age, req.body.civilStatus,
+    req.body.course, req.body.semester, req.body.yearLevel, req.body.nationality,
+    req.body.address, req.body.contact,
+    req.body.father, req.body.fatherOccupation,
+    req.body.mother, req.body.motherOccupation,
+    req.body.guardian,
+    profilePic,
+    birthCert,
+    goodMoral
+  ];
+
+  db.run(
+    `INSERT INTO enrollment 
+    (email, surname, givenName, middleInitial, gender, dob, age, civilStatus,
+     course, semester, yearLevel, nationality,
+     address, contact,
+     father, fatherOccupation,
+     mother, motherOccupation,
+     guardian,
+     profilePic, birthCertificate, goodMoral, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')`,
+     fields,
+    function (err) {
+      if (err) return handleDBError(res, err, "Enrollment failed");
+
+      db.run(`UPDATE users SET enrolled = 1 WHERE email = ?`, [req.body.email]);
+      res.json({ success: true, profilePic });
+    }
+  );
+});
+//old
+/*
 app.post("/enroll", upload.single("profilePic"), (req, res) => {
   const profilePicPath = req.file ? `/uploads/${req.file.filename}` : null;
   const fields = [
@@ -182,7 +247,7 @@ app.post("/enroll", upload.single("profilePic"), (req, res) => {
     res.json({ success: true, profilePic: profilePicPath });
   });
 });
-
+*/
 app.get("/enrollment/:email", (req, res) => {
   db.get(`SELECT * FROM enrollment WHERE email = ?`, [req.params.email], (err, row) => {
     err ? res.status(500).json({ success: false, error: "Error fetching enrollment" }) 
