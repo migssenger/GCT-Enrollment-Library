@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import Visit from "./pages/Visit";
+import Tuition from "./pages/Tuiton";
 
 function App() {
   const [mode, setMode] = useState("signup"); // current page/mode
