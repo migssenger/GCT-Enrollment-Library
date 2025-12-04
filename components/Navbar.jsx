@@ -27,6 +27,7 @@ function Navbar({ setMode, user, setUser }) {
         <button onClick={() => setMode("about")}>About</button>
         <button onClick={() => setMode("contact")}>Contact Us</button>
         <button onClick={() => setMode("visit")}>Visit Us</button>
+        <button onClick={() => setMode("tuiton")}>Tuiton</button>
         {user && <button onClick={handleLogout}>Logout</button>}
       </div>
     </nav>
@@ -35,3 +36,4 @@ function Navbar({ setMode, user, setUser }) {
 
 
 export default Navbar;
+
