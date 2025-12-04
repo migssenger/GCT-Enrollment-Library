@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
 
-// Components and Pages in alphabetical order
 import About from "./pages/About";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
@@ -10,8 +9,8 @@ import Enroll from "./pages/Enroll";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
+import Tuition from "./pages/Tuition"; 
 import Visit from "./pages/Visit";
-import Tuition from "./pages/Tuiton";
 
 function App() {
   const [mode, setMode] = useState("signup"); // current page/mode
@@ -56,6 +55,7 @@ function App() {
           />
         )}
         {mode === "signup" && <Signup setMode={setMode} />}
+        {mode === "tuition" && <Tuition />}
         {mode === "visit" && <Visit />}
       </div>
     </>
