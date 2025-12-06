@@ -116,41 +116,104 @@ function AdminDashboard({ setMode, setUser }) {
           ))}
         </tbody>
       </table>
+
           {/* Student details modal */}
           {selectedStudent && (
             <>
               <div className="modal-backdrop" onClick={closeStudentDetails} />
               <div className="modal" role="dialog" aria-modal="true">
-                <button className="modal-close" onClick={closeStudentDetails} aria-label="Close">×</button>
-                {selectedStudent.profilePic && (
-                  <img
-                    className="profile-pic"
-                    src={
-                      // if profilePic is stored as path on server, ensure full URL if needed
-                      selectedStudent.profilePic.startsWith("http")
-                        ? selectedStudent.profilePic
-                        : `http://localhost:4000${selectedStudent.profilePic}`
-                    }
-                    alt="profile"
-                  />
-                )}
-                <h3 style={{ textAlign: "center" }}>{selectedStudent.givenName} {selectedStudent.surname}</h3>
-                <ul className="details-list">
-                  <li><b>Email:</b> {selectedStudent.email}</li>
-                  <li><b>Course:</b> {selectedStudent.course}</li>
-                  <li><b>Status:</b> {selectedStudent.status}</li>
-                  <li><b>Rejection reason:</b> {selectedStudent.rejectionReason || '-'}</li>
-                </ul>
+                <div className="modal-panel">
+                  <button className="modal-close" onClick={closeStudentDetails} aria-label="Close">×</button>
+                  
+                  <div className="resume-container">
+                    {/* LEFT / HEADER SECTION */}
+                    <div className="resume-left">
+                      {selectedStudent.profilePic ? (
+                        <img
+                          className="profile-pic"
+                          src={
+                            selectedStudent.profilePic.startsWith("http")
+                              ? selectedStudent.profilePic
+                              : `http://localhost:4000${selectedStudent.profilePic}`
+                          }
+                          alt="profile"
+                        />
+                      ) : (
+                        <div className="profile-placeholder">
+                          No Photo
+                        </div>
+                      )}
+                      <h3 className="resume-name">{selectedStudent.givenName} {selectedStudent.surname}</h3>
+                      <p className="resume-contact">Email: {selectedStudent.email}</p>
+                      <p className="resume-contact">Contact: {selectedStudent.contact || 'N/A'}</p>
+                      
+                      <div className="student-info" style={{ marginTop: '15px' }}>
+                        <h4 className="section-title">Enrollment Status</h4>
+                        <ul className="details-list">
+                          <li><b>Status:</b> {selectedStudent.status}</li>
+                          {selectedStudent.rejectionReason && <li><b>Reason:</b> {selectedStudent.rejectionReason}</li>}
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    {/* RIGHT / DETAILS SECTION */}
+                    <div className="resume-right">
+                      <h4 className="section-title">Academic Details</h4>
+                      <div className="details-grid student-info">
+                        <div className="detail-item"><div className="detail-label">Course:</div><div className="detail-value">{selectedStudent.course}</div></div>
+                        <div className="detail-item"><div className="detail-label">Year/Sem:</div><div className="detail-value">{selectedStudent.yearLevel} / {selectedStudent.semester}</div></div>
+                      </div>
 
-                <h4>Other details</h4>
-                <ul className="details-list">
-                  {Object.entries(selectedStudent).map(([k, v]) => {
-                    if (["email", "course", "status", "rejectionReason", "givenName", "surname", "profilePic", "id"].includes(k)) return null;
-                    return (
-                      <li key={k}><b>{k}:</b> {String(v)}</li>
-                    );
-                  })}
-                </ul>
+                      <h4 className="section-title">Personal Details</h4>
+                      <div className="details-grid student-info">
+                        <div className="detail-item"><div className="detail-label">Gender:</div><div className="detail-value">{selectedStudent.gender}</div></div>
+                        <div className="detail-item"><div className="detail-label">DOB:</div><div className="detail-value">{selectedStudent.dob}</div></div>
+                        <div className="detail-item"><div className="detail-label">Age:</div><div className="detail-value">{selectedStudent.age}</div></div>
+                        <div className="detail-item"><div className="detail-label">Civil Status:</div><div className="detail-value">{selectedStudent.civilStatus}</div></div>
+                        <div className="detail-item"><div className="detail-label">Nationality:</div><div className="detail-value">{selectedStudent.nationality}</div></div>
+                        <div className="detail-item" style={{ gridColumn: '1 / 3' }}><div className="detail-label">Address:</div><div className="detail-value">{selectedStudent.address}</div></div>
+                      </div>
+
+                      <h4 className="section-title">Parent/Guardian Details</h4>
+                      <div className="details-grid student-info">
+                        <div className="detail-item"><div className="detail-label">Father:</div><div className="detail-value">{selectedStudent.father}</div></div>
+                        <div className="detail-item"><div className="detail-label">Father Occ.:</div><div className="detail-value">{selectedStudent.fatherOccupation}</div></div>
+                        <div className="detail-item"><div className="detail-label">Mother:</div><div className="detail-value">{selectedStudent.mother}</div></div>
+                        <div className="detail-item"><div className="detail-label">Mother Occ.:</div><div className="detail-value">{selectedStudent.motherOccupation}</div></div>
+                        <div className="detail-item"><div className="detail-label">Guardian:</div><div className="detail-value">{selectedStudent.guardian || 'N/A'}</div></div>
+                      </div>
+
+                      <h4 className="section-title">Documents</h4>
+                      <div className="details-grid student-info">
+                        {selectedStudent.birthCertificate && (
+                            <div className="detail-item">
+                                <div className="detail-label">Birth Cert:</div>
+                                <div className="detail-value">
+                                    <a href={`http://localhost:4000${selectedStudent.birthCertificate}`} target="_blank" rel="noopener noreferrer">View File</a>
+                                </div>
+                            </div>
+                        )}
+                        {selectedStudent.goodMoral && (
+                            <div className="detail-item">
+                                <div className="detail-label">Good Moral:</div>
+                                <div className="detail-value">
+                                    <a href={`http://localhost:4000${selectedStudent.goodMoral}`} target="_blank" rel="noopener noreferrer">View File</a>
+                                </div>
+                            </div>
+                        )}
+                      </div>
+
+                      <div className="modal-footer">
+                        {selectedStudent.status === 'Pending' && (
+                            <>
+                                <button className="btn-accept" onClick={() => handleApprove(selectedStudent.email)}>Approve</button>
+                                <button className="btn-reject" onClick={() => handleReject(selectedStudent.email)}>Reject</button>
+                            </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </>
           )}
