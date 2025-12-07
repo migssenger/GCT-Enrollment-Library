@@ -34,7 +34,7 @@ body {
 
 /* Update container for admin dashboard */
 .container.admin-container {
-  padding-top: 10px;
+  padding-top: 80px;
   align-items: flex-start;
 }
 
@@ -125,39 +125,10 @@ body {
   margin-top: 15px;
 }
 
-/* Dashboard Layout - Two Column */
-.dashboard-layout {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.dashboard-left {
-  flex: 1;
-  min-width: 0;
-}
-
-.dashboard-right {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 10px;
-}
-
-@media (max-width: 768px) {
-  .dashboard-layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .dashboard-right {
-    order: -1;
-  }
-}
-
 .navbar {
   position: fixed;
   top: 0;
+  height: 28px;
   width: 98%;
   background: rgba(0, 60, 120, 0.9);
   color: white;
@@ -198,7 +169,7 @@ body {
   margin: 20px auto;
   padding: 20px;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 0px;
+  border-radius: 16px;
   box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.25);
   animation: fadeIn 0.5s ease-in;
 }
@@ -212,7 +183,7 @@ body {
 .admin-dashboard table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .admin-dashboard th,
@@ -264,44 +235,6 @@ body {
   background-color: #c82333;
 }
 
-/* Explicit accept/reject button styles */
-.btn-accept {
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 6px;
-}
-.btn-accept:hover {
-  background-color: #218838;
-}
-.btn-reject {
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 6px;
-}
-.btn-reject:hover {
-  background-color: #c82333;
-}
-.btn-view {
-  background: transparent;
-  border: 1px solid #0077cc;
-  color: #087fd3;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.btn-view:hover {
-  background: #0077cc;
-  color: #fff;
-}
-
 .error {
   color: #dc3545;
   background-color: #f8d7da;
@@ -315,7 +248,6 @@ body {
 @media (max-width: 768px) {
   .admin-dashboard {
     overflow-x: auto;
-    margin-top: 10px;
   }
   
   .admin-dashboard table {
@@ -323,148 +255,693 @@ body {
   }
 }
 
-/* Modal / panel styles for student details */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
+/*Contac css start*/
+.contact-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contact-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 600px;
   width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
-  z-index: 1100;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
 }
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1200;
-  width: 90%;
-  /* portrait: narrower modal to feel like a resume page */
-  max-width: px;
-  box-sizing: border-box;
-  outline: none;
-  /* keep modal within viewport */
-  max-height: 95vh;
- }
-.modal-panel {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-  padding: 22px;
-  position: relative;
-  /* allow content to scroll if it's taller than the modal area */
-  max-height: calc(95vh - 40px);
-  overflow-y: auto;
+
+.contact-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 15px;
 }
-.modal-panel::-webkit-scrollbar { width: 10px; }
-.modal-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 6px; }
-.modal .modal-close {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
+
+.contact-info {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: #414141;
+  line-height: 1.6;
 }
-.profile-pic {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 50%;
+
+.contact-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.contact-description {
+  background: rgba(52, 152, 219, 0.1);
+  border-left: 4px solid #3498db;
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.contact-description p {
+  margin: 8px 0;
+  color: #2c3e50;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Add a subtle divider like in your design */
+.contact-content::after {
+  content: '';
   display: block;
-  margin: 0 auto 12px auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3498db, transparent);
+  margin: 30px 0;
+  border-radius: 2px;
 }
-.details-list {
+
+.contact-intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #414141;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.contact-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 9px;
+  border-left: 4px solid #3498db;
+}
+
+.contact-subtitle {
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 8px;
+}
+
+.contact-info {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #34495e;
+  line-height: 1.5;
+}
+
+.contact-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.contact-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ecf0f1;
+  font-style: italic;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/*Visit.jsx*/
+.visit-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.visit-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.visit-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 15px;
+}
+
+.visit-intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.visit-intro strong {
+  color: #2c3e50;
+}
+
+.visit-section {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.visit-subtitle {
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.visit-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 0;
+}
+
+.visit-text strong {
+  color: #2c3e50;
+}
+
+.location-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-.details-list li {
-  padding: 6px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-.details-list li b { width: 120px; display: inline-block; }
 
-/* Formal modal structure */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items:flex-start;
-  margin-bottom: 12px;
+.location-list li {
+  padding: 8px 0;
+  padding-left: 20px;
+  position: relative;
+  color: #34495e;
+  font-size: 1rem;
 }
-.modal-title {
-  margin: 0;
-  font-size: 18px;
-  color: #222;
-}
-.modal-subtitle {
-  margin: 2px 0 0 0;
-  font-size: 13px;
-  color: #666;
-}
-.modal-body { margin-top: 8px; }
-.details-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 20px;
-}
-.detail-item { display: flex; align-items: flex-start; }
-.detail-label { width: 140px; font-weight: 600; color: #333; }
-.detail-value { flex: 1; color: #111; }
-.modal-footer { margin-top: 18px; text-align: right; }
 
-/* Resume-style layout for student modal */
-.resume-container {
-  /* portrait: stack vertically so modal reads like a resume page */
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items:flex-start  ;
+.location-list li:before {
+  content: "•";
+  color: #3498db;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
 }
-.resume-left {
+
+/* Location Image Styles */
+.location-image-container {
+  text-align: center;
+  margin: 20px 0 10px 0;
+  padding: 0;
+}
+
+.location-image {
   width: 100%;
-  flex-shrink: 0;
+  max-width: 700px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e9ecef;
+}
+
+/* Remove any default margins from the image */
+.location-image-container img {
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .visit-container {
+    padding: 20px 10px;
+  }
+  
+  .visit-content {
+    padding: 20px;
+  }
+  
+  .visit-title {
+    font-size: 2rem;
+  }
+  
+  .visit-section {
+    padding: 15px;
+  }
+  
+  .location-image {
+    max-width: 100%;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .visit-content {
+    padding: 15px;
+  }
+  
+  .visit-title {
+    font-size: 1.8rem;
+  }
+  
+  .visit-section {
+    padding: 12px;
+  }
+}
+
+/* Google Maps Styles */
+.google-maps-container {
+  text-align: center;
+  margin: 20px 0 10px 0;
+  padding: 0;
+}
+
+/* Google Maps Link Styles */
+.google-maps-link-container {
+  text-align: center;
+  margin: 25px 0 15px 0;
+  padding: 20px;
+  background: rgba(248, 249, 250, 0.9);
+  border-radius: 8px;
+  border: 1px dashed #3498db;
+}
+
+.google-maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #4285f4;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.google-maps-link:hover {
+  background: #3367d6;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+.google-maps-link:active {
+  transform: translateY(-1px);
+}
+
+.map-icon {
+  font-size: 1.3rem;
+}
+
+.map-instruction {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+/*About css here*/
+.about-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.about-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.about-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 15px;
+}
+
+.about-section {
+  margin-bottom: 25px;
+  padding: 25px;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.about-subtitle {
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 8px;
   text-align: center;
 }
-.resume-right {
-  width: 100%;
-  flex: none;
+
+.about-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #414141;
+  margin-bottom: 10px;
+  text-align: center;
 }
-.profile-placeholder {
-  width: 120px;
-  height: 120px;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-  margin: 0 auto 12px auto;
+
+/* Hymn Styling */
+.hymn-content {
+  text-align: center;
 }
-.resume-name { 
- margin: 8px 0 6px 0; 
- font-size: 20px; }
 
-.resume-contact {
-font-size: 13px; 
-color: #4693f8; }
+.hymn-stanza {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+}
 
-.section-title { 
-  margin: 6px 0 10px 0;
-  font-size: px; 
-  color: #222; }
+.hymn-line {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #34495e;
+  margin: 5px 0;
+  font-style: italic;
+}
 
-.student-info {
-  background: s#fafafa; 
-  padding: 12px; 
+.about-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ecf0f1;
+  font-style: italic;
+  color: #7f8c8d;
+  font-weight: 500;
+  background: rgba(52, 73, 94, 0.05);
+  padding: 15px;
   border-radius: 8px;
-  justify-content: left;
-  margin-bottom: 12px;
-  border: 1px solid #eee; }
+}
 
-/* keep portrait layout on small screens as well */
-@media (max-width: 760px) {
-  .resume-container { flex-direction: column; }
-  .resume-left { width: 100%; text-align: left; }
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 20px 10px;
+  }
+  
+  .about-content {
+    padding: 20px;
+  }
+  
+  .about-title {
+    font-size: 2rem;
+  }
+  
+  .about-section {
+    padding: 15px;
+  }
+  
+  .hymn-stanza {
+    padding: 10px;
+  }
+}
+
+/* Tuition Css*/
+.tuition-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.tuition-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.tuition-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 15px;
+}
+
+.tuition-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.tuition-header h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.tuition-header h3 {
+  color: #7f8c8d;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.tuition-header h4 {
+  color: #e74c3c;
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tuition-header p {
+  color: #34495e;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tuition-section {
+  margin-bottom: 40px;
+  padding: 25px;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.program-title {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+.tuition-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tuition-table thead {
+  background: #3498db;
+  color: white;
+}
+
+.tuition-table th {
+  padding: 15px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  border-right: 1px solid #2980b9;
+}
+
+.tuition-table th:last-child {
+  border-right: none;
+}
+
+.tuition-table td {
+  padding: 12px 15px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  font-size: 0.95rem;
+}
+
+.tuition-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tuition-table tbody tr:hover {
+  background-color: #e3f2fd;
+}
+
+.tuition-table .subtotal {
+  background-color: #e8f5e9;
+  font-weight: 600;
+}
+
+.tuition-table .total {
+  background-color: #e3f2fd;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.tuition-table .total td:first-child {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.table-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #e74c3c;
+  font-style: italic;
+  text-align: center;
+}
+
+.signature-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 0;
+  padding: 30px;
+  background: rgba(52, 152, 219, 0.05);
+  border-radius: 8px;
+  border-top: 2px solid #3498db;
+  border-bottom: 2px solid #3498db;
+}
+
+.signature {
+  text-align: center;
+}
+
+.signature p {
+  margin: 5px 0;
+  color: #34495e;
+}
+
+.signature-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-top: 15px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tuition-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ecf0f1;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.tuition-footer p {
+  margin: 10px 0;
+}
+
+.disclaimer {
+  background: rgba(231, 76, 60, 0.1);
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #e74c3c;
+  margin-top: 20px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tuition-container {
+    padding: 20px 10px;
+  }
+  
+  .tuition-content {
+    padding: 20px;
+  }
+  
+  .tuition-title {
+    font-size: 2rem;
+  }
+  
+  .tuition-section {
+    padding: 15px;
+  }
+  
+  .signature-section {
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  .tuition-table th,
+  .tuition-table td {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tuition-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .program-title {
+    font-size: 1.3rem;
+  }
+  
+  .tuition-table th,
+  .tuition-table td {
+    padding: 8px 5px;
+    font-size: 0.8rem;
+  }
 }
