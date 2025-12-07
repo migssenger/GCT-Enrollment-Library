@@ -16,7 +16,7 @@ function Contact() {
           <p className="contact-info">
             <strong>Garcia College of Technology</strong>
           </p>
-          <p className="contact-info">Roxas Avenue, Kalibo, Aklan</p>
+          <p className="contact-info">Estancia, Kalibo, Aklan</p>
           <p className="contact-info"><strong>Email:</strong> info@gct.edu.ph</p>
           <p className="contact-info"><strong>Phone:</strong> (036) 268-1234</p>
         </div>
@@ -43,3 +43,4 @@ function Contact() {
 }
 
 export default Contact;
+
