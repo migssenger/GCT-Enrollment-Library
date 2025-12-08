@@ -72,14 +72,29 @@ function AdminDashboard({ setMode, setUser }) {
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
+  const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (!confirmLogout) return;
-    try {
+    
+    console.log("Logging out...");
+    
+    // Clear user from localStorage if you're using it
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    
+    // Call setUser if provided
+    if (setUser) {
       setUser(null);
-    } catch (err) {
-      // if setUser isn't provided, ignore
+      console.log("User state cleared");
     }
-    if (setMode) setMode("login");
+    
+    // Call setMode if provided
+    if (setMode) {
+      setMode("login");
+      console.log("Redirecting to login");
+    } else {
+      // If setMode isn't available, try to redirect manually
+      window.location.href = "/";
+    }
   };
 
   return (
