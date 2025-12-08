@@ -38,6 +38,7 @@ db.serialize(() => {
     )`,
     `CREATE TABLE IF NOT EXISTS enrollment (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id TEXT UNIQUE,
       email TEXT, surname TEXT, givenName TEXT, middleInitial TEXT,
       gender TEXT, dob TEXT, age INTEGER, civilStatus TEXT,
       course TEXT, semester TEXT, yearLevel TEXT, nationality TEXT,
@@ -54,7 +55,14 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE, password TEXT
-    )`
+    )`,
+    // Add this new table to track the next student ID
+    `CREATE TABLE IF NOT EXISTS student_id_counter (
+      id INTEGER PRIMARY KEY,
+      last_student_id INTEGER DEFAULT 10000
+    )`,
+    // Initialize the counter if it doesn't exist
+    `INSERT OR IGNORE INTO student_id_counter (id, last_student_id) VALUES (1, 10000)`
   ];
   
   tables.forEach(sql => db.run(sql));
@@ -81,6 +89,11 @@ const handleDBError = (res, err, successMsg = "Operation successful") => {
 
 const hashPassword = async (password) => await bcrypt.hash(password, 10);
 const comparePassword = async (plainPassword, hashedPassword) => await bcrypt.compare(plainPassword, hashedPassword);
+
+// Helper function to format student ID
+const formatStudentId = (id) => {
+  return String(id).padStart(5, '0');
+};
 
 // Routes
 
@@ -226,15 +239,93 @@ app.get("/enrollment/:email", (req, res) => {
 
 // Admin routes
 app.get("/admin/enrollments", (req, res) => {
-  db.all(`SELECT * FROM enrollment`, [], (err, rows) => {
+  db.all(`SELECT * FROM enrollment ORDER BY id DESC`, [], (err, rows) => {
     err ? res.status(500).json({ success: false, error: "Error fetching enrollments" }) 
         : res.json(rows || []);
   });
 });
 
+// SIMPLIFIED /admin/approve route - No complex transactions
 app.post("/admin/approve", (req, res) => {
-  db.run(`UPDATE enrollment SET status = 'Approved', rejectionReason = NULL WHERE email = ?`,
-         [req.body.email], (err) => handleDBError(res, err, "Enrollment approved"));
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, error: "Email is required" });
+  }
+
+  console.log(`🚀 Approving student: ${email}`);
+
+  // Use a transaction to make the counter increment + enrollment update atomic
+  db.run("BEGIN IMMEDIATE TRANSACTION", function (beginErr) {
+    if (beginErr) {
+      console.error("❌ Could not start transaction:", beginErr.message);
+      return res.status(500).json({ success: false, error: "Failed to start DB transaction" });
+    }
+
+    db.get("SELECT last_student_id FROM student_id_counter WHERE id = 1", (err, row) => {
+      if (err) {
+        console.error("❌ Error getting student ID counter:", err.message);
+        db.run("ROLLBACK", () => {});
+        return res.status(500).json({ success: false, error: "Failed to get student ID" });
+      }
+
+      const nextStudentId = row.last_student_id + 1;
+      if (nextStudentId > 99999) {
+        db.run("ROLLBACK", () => {});
+        return res.status(500).json({ success: false, error: "Student ID limit reached" });
+      }
+
+      const formattedStudentId = formatStudentId(nextStudentId);
+
+      // Update counter
+      db.run("UPDATE student_id_counter SET last_student_id = ? WHERE id = 1", [nextStudentId], function (updateCounterErr) {
+        if (updateCounterErr) {
+          console.error("❌ Error updating counter:", updateCounterErr.message);
+          db.run("ROLLBACK", () => {});
+          return res.status(500).json({ success: false, error: "Failed to update student ID counter" });
+        }
+
+        // Update enrollment with the new student ID and set status
+        db.run(
+          `UPDATE enrollment 
+           SET status = 'Approved', 
+               rejectionReason = NULL,
+               student_id = ?
+           WHERE email = ?`,
+          [formattedStudentId, email],
+          function (updateEnrollmentErr) {
+            if (updateEnrollmentErr) {
+              console.error("❌ Error updating enrollment:", updateEnrollmentErr.message);
+              db.run("ROLLBACK", () => {});
+              return res.status(500).json({ success: false, error: "Failed to approve enrollment" });
+            }
+
+            // Commit the transaction
+            db.run("COMMIT", (commitErr) => {
+              if (commitErr) {
+                console.error("❌ Commit failed:", commitErr.message);
+                db.run("ROLLBACK", () => {});
+                return res.status(500).json({ success: false, error: "Failed to finalize approval" });
+              }
+
+              console.log(`✅ Student ${email} approved with ID: ${formattedStudentId}`);
+
+              // Also update the users table (best-effort)
+              db.run(`UPDATE users SET enrolled = 1 WHERE email = ?`, [email], (err) => {
+                if (err) console.error("Note: Could not update users table:", err.message);
+              });
+
+              res.json({ 
+                success: true, 
+                message: "Enrollment approved",
+                studentId: formattedStudentId
+              });
+            });
+          }
+        );
+      });
+    });
+  });
 });
 
 app.post("/admin/reject", (req, res) => {
@@ -254,6 +345,43 @@ app.post("/setup-admin", async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: "Setup failed" });
   }
+});
+
+// Get current student ID counter (for admin info)
+app.get("/admin/student-counter", (req, res) => {
+  db.get("SELECT last_student_id FROM student_id_counter WHERE id = 1", (err, row) => {
+    if (err) {
+      return res.status(500).json({ success: false, error: "Failed to get counter" });
+    }
+    res.json({ 
+      success: true, 
+      lastStudentId: row.last_student_id,
+      nextStudentId: formatStudentId(row.last_student_id + 1)
+    });
+  });
+});
+
+// Debug endpoint to check student IDs
+app.get("/admin/debug-students", (req, res) => {
+  db.all(`
+    SELECT 
+      id,
+      email,
+      student_id,
+      status,
+      givenName || ' ' || surname as name
+    FROM enrollment 
+    ORDER BY id DESC
+  `, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    res.json({ 
+      success: true, 
+      count: rows.length,
+      students: rows
+    });
+  });
 });
 
 // Root route
