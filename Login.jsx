@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
 function Login({ setMode, setUser, setEnrolled }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,7 @@ function Login({ setMode, setUser, setEnrolled }) {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:4000/login", form);
+      const res = await axios.post(`${API_URL}/login`, form);
 
       if (res.data.success && res.data.user) {
         setUser(res.data.user);
