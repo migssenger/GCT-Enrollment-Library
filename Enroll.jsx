@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
 function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
   const [form, setForm] = useState({
     surname: "", givenName: "", middleInitial: "",
@@ -37,7 +39,7 @@ function Enroll({ user, setMode, setEnrolled, setProfilePic }) {
     if (goodMoral) formData.append("goodMoral", goodMoral);
 
     try {
-      const res = await fetch("http://localhost:4000/enroll", {
+      const res = await fetch(`${API_URL}/enroll`, {
         method: "POST",
         body: formData, // do NOT set Content-Type
       });
