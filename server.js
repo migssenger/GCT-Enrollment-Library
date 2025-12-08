@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = 4000;
+const PORT = 3001;
 
 // Setup
 const __filename = fileURLToPath(import.meta.url);
@@ -70,17 +70,7 @@ const upload = multer({
     }
   })
 });
-//old
-/*
-const upload = multer({ 
-  storage: multer.diskStorage({
-    destination: "uploads/",
-    filename: (req, file, cb) => cb(null, "profilePic-" + Date.now() + path.extname(file.originalname))
-  })
-});
-*/
 
-// Helper functions
 const handleDBError = (res, err, successMsg = "Operation successful") => {
   if (err) {
     console.error("DB Error:", err.message);
@@ -226,28 +216,7 @@ app.post("/enroll", upload.fields([
     }
   );
 });
-//old
-/*
-app.post("/enroll", upload.single("profilePic"), (req, res) => {
-  const profilePicPath = req.file ? `/uploads/${req.file.filename}` : null;
-  const fields = [
-    req.body.email, req.body.surname, req.body.givenName, req.body.middleInitial,
-    req.body.gender, req.body.dob, req.body.age, req.body.civilStatus, req.body.course,
-    req.body.semester, req.body.address, req.body.contact, req.body.father,
-    req.body.mother, req.body.guardian, profilePicPath
-  ];
 
-  db.run(`INSERT INTO enrollment (email, surname, givenName, middleInitial, gender, 
-          dob, age, civilStatus, course, semester, address, contact, father, mother, 
-          guardian, profilePic, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')`,
-          fields, function(err) {
-    if (err) return handleDBError(res, err, "Enrollment failed");
-    
-    db.run(`UPDATE users SET enrolled = 1 WHERE email = ?`, [req.body.email]);
-    res.json({ success: true, profilePic: profilePicPath });
-  });
-});
-*/
 app.get("/enrollment/:email", (req, res) => {
   db.get(`SELECT * FROM enrollment WHERE email = ?`, [req.params.email], (err, row) => {
     err ? res.status(500).json({ success: false, error: "Error fetching enrollment" }) 
