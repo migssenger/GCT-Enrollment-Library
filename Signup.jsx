@@ -5,6 +5,8 @@ function Signup({ setMode }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -16,7 +18,7 @@ function Signup({ setMode }) {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/signup", form);
+      const res = await axios.post(`${API_URL}/signup`, form);
 
       if (res.data.success) {
         alert("Signup successful!");
