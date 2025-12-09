@@ -175,7 +175,7 @@ function Dashboard({ user }) {
 
           <div className="status-card">
             <div className="status-header">
-              <div className={`status-icon status-${enrollment.status.toLowerCase()}`}>
+              <div className={`status-icon status-${(enrollment.status || 'pending').toLowerCase()}`}>
                 {enrollment.status === "Approved" ? (
                   <i className="fas fa-check-circle"></i>
                 ) : enrollment.status === "Rejected" ? (
@@ -186,7 +186,7 @@ function Dashboard({ user }) {
               </div>
               <div>
                 <p className="status-label">Enrollment Status</p>
-                <h3 className={`status-value status-${enrollment.status.toLowerCase()}`}>
+                <h3 className={`status-value status-${(enrollment.status || 'pending').toLowerCase()}`}>
                   {enrollment.status}
                 </h3>
               </div>
