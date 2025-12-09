@@ -102,7 +102,7 @@ function AdminDashboard({ setMode, setUser }) {
       <button
         onClick={handleLogout}
         aria-label="Logout"
-        style={{ position: "fixed", top: 12, right: 12, zIndex: 1000 }}
+        style={{ position: "fixed", top: 8.4, right: 5, zIndex: 1000 }}
       >
         Logout
       </button>
@@ -622,7 +622,7 @@ function AdminDashboard({ setMode, setUser }) {
                     justifyContent: 'center',
                     gap: '10px'
                   }}>
-                    {selectedStudent.status === 'Pending' && (
+                    {/*selectedStudent.status === 'Pending' &&*/ (
                         <>
                             <button 
                               className="btn-accept" 
